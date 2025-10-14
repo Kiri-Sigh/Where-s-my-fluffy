@@ -1,0 +1,254 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  //output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =========================================
+// ENUMS
+// =========================================
+
+enum ListingStatus {
+  MISSING
+  FOUND
+  CLOSED
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+// =========================================
+// MODELS
+// =========================================
+
+// --------------------
+// USERS
+// --------------------
+model User {
+  id            String   @id @default(uuid())
+  username      String   @unique
+  password_user String
+  name          String?
+  email         String
+  phone_no      String
+  line_id       String?
+  insta         String?
+  facebook      String?
+  balance       Decimal  @default(0)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  listings              Listing[]            @relation("UserListings")
+  pinned                UserPinnedListings[] @relation("PinnedUser")
+  //sessions        Session[]     @relation("UserSession") 
+  sent_transactions     Transaction[]        @relation("SentTransactions")
+  received_transactions Transaction[]        @relation("ReceivedTransactions")
+
+  recieved_notifications Notification[] @relation("UserNotifications")
+  sent_notifications     Notification[] @relation("FromWhoNotifications")
+  image                  Image?         @relation("UserImage")
+}
+
+model UserPinnedListings {
+  list_id String
+
+  user_id String
+  // Relations
+
+  list User    @relation("PinnedUser", fields: [user_id], references: [id])
+  user Listing @relation("PinnedUserListings", fields: [list_id], references: [id])
+
+  @@id([list_id, user_id])
+}
+
+model ChatRoom {
+  id       String    @id @default(uuid())
+  name     String
+  messages Message[]
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  senderId  String
+  roomId    String
+  content   String
+  createdAt DateTime @default(now())
+
+  room ChatRoom @relation(fields: [roomId], references: [id])
+}
+
+// --------------------
+// ADMINS
+// --------------------
+model UserAdmin {
+  id            String  @id @default(uuid())
+  username      String  @unique
+  password_user String
+  name          String?
+  email         String
+
+  phone_no   String
+  line_id    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  sessions Session[] @relation("AdminSession")
+}
+
+// --------------------
+// LISTINGS
+// --------------------
+model Listing {
+  id                    String        @id @default(uuid())
+  pet_name              String        
+  description           String?
+  status                ListingStatus @default(MISSING)
+  expected_pet_location String?
+  bounty                Decimal       @default(0)
+  created_at            DateTime      @default(now())
+  updated_at            DateTime      @updatedAt
+
+  user_id              String
+  // Relations
+  images               Image[]              @relation("ListingImage")
+  location_id          ListingsLocation?    @relation("LocationOfList")
+  founded_reports      FoundedReport[]      @relation("ListingReport")
+  owner                User                 @relation("UserListings", fields: [user_id], references: [id])
+  user_pinned_listings UserPinnedListings[] @relation("PinnedUserListings")
+
+  notifications Notification[] @relation("ListingNotifications")
+}
+
+model ListingsLocation {
+  id String @id @default(uuid())
+
+  list_id String @unique
+
+  location_id String @unique
+  // Relations
+
+  list     Listing  @relation("LocationOfList", fields: [list_id], references: [id])
+  location Location @relation("ListLocation", fields: [location_id], references: [id])
+  //@@id([list_id, location_id])
+}
+
+// --------------------
+// TRANSACTIONS
+// --------------------
+model Transaction {
+  id           String            @id @default(uuid())
+  from_user_id String
+  to_user_id   String
+  amount       Decimal
+  status       TransactionStatus @default(PENDING)
+  created_at   DateTime          @default(now())
+  image        Image?            @relation("TransactionImage")
+  // Relations
+  from_user    User              @relation("SentTransactions", fields: [from_user_id], references: [id])
+  to_user      User              @relation("ReceivedTransactions", fields: [to_user_id], references: [id])
+}
+
+// --------------------
+// NOTIFICATIONS
+// --------------------
+model Notification {
+  id         String   @id @default(uuid())
+  user_id    String
+  listing_id String?
+  from_id    String?
+  message    String
+  image      Image[]   @relation("NotificationImage")
+  read_already    Boolean    @default(false)
+  created_at DateTime @default(now())
+
+  // Relation
+  user    User     @relation("UserNotifications", fields: [user_id], references: [id])
+  listing Listing? @relation("ListingNotifications", fields: [listing_id], references: [id])
+  from    User?    @relation("FromWhoNotifications", fields: [from_id], references: [id])
+}
+
+// --------------------
+// LANDMARKS
+// --------------------
+//model Landmark {
+//  id          String    @id @default(uuid())
+//  name        String
+//  latitude    Float
+//  longitude   Float
+//  created_at  DateTime  @default(now())
+//}
+
+model Location {
+  id         String   @id @default(uuid())
+  name       String
+  latitude   Float
+  longitude  Float
+  created_at DateTime @default(now())
+  location_address     String    @default("") 
+  location_list ListingsLocation? @relation("ListLocation")
+  //@@index([latitude, longitude], type: Gist)
+}
+
+//model Location {
+//  id        String   @id @default(uuid())
+// name      String
+// coordinates Unsupported("geography(Point, 4326)") @db.Geography
+//  created_at DateTime @default(now())
+//
+//  @@index([coordinates], type: Gist)
+//}
+
+// --------------------
+// IMAGES (missing from original)
+// --------------------
+model Image {
+  id              String        @id @default(uuid())
+  image_url       String
+  listing_id      String?
+  image_name      String    
+  user_id         String?       @unique
+  notification_id String?       @unique
+  transaction_id  String?       @unique
+  created_at      DateTime      @default(now())
+  list            Listing?       @relation("ListingImage", fields: [listing_id], references: [id])
+  user            User?         @relation("UserImage", fields: [user_id], references: [id])
+  notification    Notification? @relation("NotificationImage", fields: [notification_id], references: [id])
+  transaction     Transaction?  @relation("TransactionImage", fields: [transaction_id], references: [id])
+}
+
+// --------------------
+// FOUNDED REPORTS (missing from original)
+// --------------------
+model FoundedReport {
+  id          String   @id @default(uuid())
+  description String?
+  listing     Listing? @relation("ListingReport", fields: [listing_id], references: [id])
+  listing_id  String?
+  created_at  DateTime @default(now())
+}
+
+// --------------------
+// SESSIONS (referenced but missing)
+// --------------------
+model Session {
+  id         String     @id @default(uuid())
+  admin      UserAdmin? @relation("AdminSession", fields: [admin_id], references: [id])
+  admin_id   String?
+  token      String
+  created_at DateTime   @default(now())
+  expires_at DateTime
+}
