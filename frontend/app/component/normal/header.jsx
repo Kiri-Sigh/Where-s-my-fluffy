@@ -4,7 +4,7 @@ import SmallModal from "./small_modal";
 import { useAppContext } from "../../root_context";
 import EditUserModal from "../modal/user_profile_edit_modal";
 const Header = () => {
-  const { setStateType } = useAppContext();
+  const { setStateType, stateType } = useAppContext();
   const [userId, setUserId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -62,7 +62,7 @@ const Header = () => {
               <div className="ml-10 flex items-center space-x-4">
                 <button
                   onClick={() => handleProtectedClick(`/map`, "MY_LIST", true)}
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600"
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${stateType === "MY_LIST" ? "text-indigo-600" : "text-gray-700"}  hover:text-indigo-600`}
                 >
                   My List
                 </button>
@@ -70,7 +70,7 @@ const Header = () => {
                   onClick={() =>
                     handleProtectedClick(`/map`, "PINNED_LIST", true)
                   }
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600"
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${stateType === "PINNED_LIST" ? "text-indigo-600" : "text-gray-700"}  hover:text-indigo-600`}
                 >
                   Pinned List
                 </button>
@@ -78,7 +78,7 @@ const Header = () => {
                   onClick={() =>
                     handleProtectedClick(`/map`, "FIND_NEARBY", true)
                   }
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600"
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${stateType === "FIND_NEARBY" ? "text-indigo-600" : "text-gray-700"} hover:text-indigo-600`}
                 >
                   Find Nearby Pets
                 </button>
@@ -91,7 +91,7 @@ const Header = () => {
                   Notification
                 </button> */}
                 <button
-                  className="ml-4 p-1 rounded-full text-gray-700 hover:text-indigo-600 focus:outline-none"
+                  className={`ml-4 p-1 rounded-full ${stateType === "FIND_NEARBY" ? "text-gray-700" : "text-indigo-600"} hover:text-indigo-600 focus:outline-none`}
                   onClick={() => {
                     if (userId) {
                       setIsOpen(true);
