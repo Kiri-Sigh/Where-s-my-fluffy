@@ -1,8 +1,36 @@
-#presentation video + slides - https://drive.google.com/drive/folders/1zZ-MZbzBfKJadhSvYybIMbmHWZ266z11?usp=drive_link
-# currently docker isn't available, to run exec "npm run dev"
+## presentation video + slides - https://drive.google.com/drive/folders/1zZ-MZbzBfKJadhSvYybIMbmHWZ266z11?usp=drive_link
+## currently docker isn't available, to run exec `npm run dev`
 
-🐾 Where's My Fluffy?
+# Where's My Fluffy?
 
-Where's My Fluffy? is a full-stack web application designed to bridge the gap between pet owners and community helpers. It provides a dedicated, location-based platform to streamline the search for lost pets through real-time notifications and interactive mapping.🏗️ Architecture OverviewThe system follows a Client-Server, Three-Layer Architecture to ensure a clear separation of concerns, modularity, and future scalability.Presentation Layer: Developed with React.js and Vite, utilizing Leaflet for real-time map interactions and Tailwind CSS for a responsive UI.Application/Logic Layer: A Node.js and Express.js REST API handling business logic, JWT-based authentication, and geolocation filtering.Data Layer: A PostgreSQL relational database managed via Prisma ORM, with Cloudinary integration for optimized cloud image storage.🌟 Key FeaturesInteractive Lost Pet Map: View and interact with location-based markers representing missing pets in your vicinity.Smart Filtering: Search for listings based on date ranges, bounty values, or proximity (default 5km radius).Real-time Notifications: Helpers can send sightings, messages, and images directly to pet owners.User Workspace: Dedicated views for "My Listings," "Pinned Posts," and "Nearby Searches."Secure Authentication: Token-based authorization protecting user data and listing management (Create/Edit/Delete).🛠️ Tech StackComponentTechnologyFrontendReact.js, Vite, Leaflet, Context APIBackendNode.js, Express.jsDatabasePostgreSQL, Prisma ORMStorageCloudinary (Images)📐 System Design ArtifactsThis project was developed with a strong emphasis on the Software Development Life Cycle (SDLC):Use Case Modeling: Defined roles for Pet Owners (Full CRUD on posts) and Pet Finders (Sighting notifications).Data Modeling: Relational schema including Users, Listings, Locations, and Notifications with many-to-many junction tables.Sequence Diagrams: Detailed logic flow for Registration, Login, and Listing creation.
+ Where's My Fluffy? is a full-stack web application designed to bridge the gap between pet owners and community helpers. 
+It provides a dedicated, location-based platform to streamline the search for lost pets through real-time notifications and interactive mapping. 
+## Architecture Overview
+The system follows a Client-Server, Three-Layer Architecture to ensure a clear separation of concerns, modularity, and future scalability. 
+- ### Presentation Layer:
+   Developed with React.js and Vite, utilizing Leaflet for real-time map interactions and Tailwind CSS for a responsive UI.
+- ### Application/Logic Layer:
+  A Node.js and Express.js REST API handling business logic, JWT-based authentication, and geolocation filtering.
+- ### Data Layer:
+  A PostgreSQL relational database managed via Prisma ORM, with Cloudinary integration for optimized cloud image storage.
+## Key Features
+- ### Interactive Lost Pet Map:
+  View and interact with location-based markers representing missing pets in your vicinity.Smart Filtering: Search for listings based on date ranges, bounty values, or proximity (default 5km radius).
+- ### Real-time Notifications:
+  Helpers can send sightings, messages, and images directly to pet owners.User Workspace: Dedicated views for "My Listings," "Pinned Posts," and "Nearby Searches."
+- ### Secure Authentication:
+  Token-based authorization protecting user data and listing management (Create/Edit/Delete).
 
+## Tech Stack
+| Component | Technology |
+| --- | --- |
+|Frontend | React.js, Vite, Leaflet, Context API |
+|Backend | Node.js, Express.js |
+|Database | PostgreSQL, Prisma ORM |
+|Storage | Cloudinary(Images)|
 
+## System Design Artifacts
+### This project was developed with a strong emphasis on the Software Development Life Cycle (SDLC):
+- **Use Case Modeling:** Defined roles for Pet Owners (Full CRUD on posts) and Pet Finders (Sighting notifications).
+- **Data Modeling:** Relational schema including Users, Listings, Locations, and Notifications with many-to-many junction tables.
+- **Sequence Diagrams:** Detailed logic flow for Registration, Login, and Listing creation.
